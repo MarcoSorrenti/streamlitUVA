@@ -60,10 +60,10 @@ def predict(image: Image.Image, threshold=0.5):
 # ============================================================
 # STREAMLIT GUI
 # ============================================================
-st.title("🍇 Classificatore di Uva da Tavola (Multi-label)")
-st.write("Carica un'immagine: il modello predirà le varietà o le classi presenti.")
+st.title("Classificatore di Uva da Tavola (Test)")
+st.write("Carica un'immagine: il modello predirà la classe dell'UVA: Immatura, Semi Matura, Matura.")
 
-uploaded_file = st.file_uploader("📤 Scegli un'immagine", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Scegli un'immagine", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
@@ -72,6 +72,6 @@ if uploaded_file is not None:
     if st.button("Predici"):
         labels = predict(image)
         if labels:
-            st.success(f"✅ Etichette predette: {', '.join(labels)}")
+            st.success(f"Etichette predette: {', '.join(labels)}")
         else:
-            st.warning("⚠️ Nessuna etichetta rilevata sopra la soglia.")
+            st.warning("Nessuna etichetta rilevata sopra la soglia.")
