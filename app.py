@@ -60,7 +60,7 @@ def predict(image: Image.Image, threshold=0.5):
 # ============================================================
 # STREAMLIT GUI
 # ============================================================
-st.title("Classificatore di Uva da Tavola (Test)")
+st.title("Classificatore di Uva da Tavola")
 st.write("Carica un'immagine: il modello predirà la classe dell'UVA: Immatura, Semi Matura, Matura.")
 
 uploaded_file = st.file_uploader("Scegli un'immagine", type=["jpg", "jpeg", "png"])
