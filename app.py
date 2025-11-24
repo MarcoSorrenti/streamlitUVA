@@ -67,13 +67,14 @@ uploaded_file = st.file_uploader("Scegli un'immagine", type=["jpg", "jpeg", "png
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Immagine selezionata", use_container_width=True)
+    st.image(image, caption="Immagine selezionata", width=True)
     
     if st.button("Valuta"):
         labels = predict(image)
-        print(type(labels))
+        
         if labels:
             if len(labels)>1:
+                st.success(f"tipo: {type(labels)}")
                 st.success(f"I grappoli sono: {', '.join(labels)}")
             else:
                 st.success(f"Il grappolo è: {', '.join(labels)}")
