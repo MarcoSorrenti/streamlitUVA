@@ -134,6 +134,24 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # ============================================================
+# BANNER
+# ============================================================
+
+st.markdown(
+    f"""
+    <style>
+    .full-width-img {{
+        width: 100%;
+        height: auto;
+    }}
+    </style>
+    <img src="banner.png" class="full-width-img">
+    """,
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
 # HEADER CON LOGO
 # ============================================================
 col1, col2, col3 = st.columns([1, 2, 1])
