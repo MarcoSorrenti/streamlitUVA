@@ -150,14 +150,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # ============================================================
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.markdown(
-        """
-        <div style="display: flex; justify-content: center;">
-            <img src="logo.png" width="65">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.image("logo.png", width=65)
 
 st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
