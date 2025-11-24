@@ -197,7 +197,7 @@ if uploaded_file is not None:
     # MOSTRA IMMAGINE – RIDOTTA
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image(image, width=150)
+        st.image(image, use_column_width=True)
 
     if st.button("Valuta", type="primary"):
 
