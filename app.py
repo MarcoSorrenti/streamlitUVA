@@ -106,7 +106,7 @@ test_json = "dataset/annotations/mimc_test_images.json"
 # STREAMLIT - TEMA E STILE
 # ============================================================
 # Nasconde menu e footer per look più pulito
-st.set_page_config(page_title="Smart Harvesting", layout="centered")
+st.set_page_config(page_title="Smart Harvesting", page_icon="🍇", layout="centered")
 
 custom_css = """
 <style>
@@ -149,8 +149,8 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # Logo + Titolo
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("logo.png", width=120)
-st.markdown("<div class='title-text'>Smart Harvesting 🍇</div>", unsafe_allow_html=True)
+    st.image("logo.png", width=80)
+st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='subtitle-text'>Carica un'immagine del grappolo e rileverò il livello di maturazione.</div>",
     unsafe_allow_html=True
@@ -206,7 +206,7 @@ def predict(image: Image.Image, threshold=0.5):
 
 st.markdown("<div class='upload-box'>", unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("📤 Carica un'immagine", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
 st.markdown("</div>", unsafe_allow_html=True)
 
