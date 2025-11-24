@@ -102,62 +102,70 @@ model_path = "model.pt"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 test_json = "dataset/annotations/mimc_test_images.json"
 
-
 # ============================================================
-# STREAMLIT STILE
+# STREAMLIT STYLES
 # ============================================================
-st.set_page_config(page_title="Smart Harvesting", page_icon="🍇", layout="centered")
+st.set_page_config(page_title="Smart Harvesting", page_icon="🌿", layout="centered")
 
 custom_css = """
 <style>
 
-    body { background-color: #faf5f0; }
+    body {
+        background-color: #faf5f0;
+    }
 
     .title-text {
-        font-size: 42px;
+        font-size: 36px;
         font-weight: 800;
-        color: #6a0dad;
         text-align: center;
-        margin-bottom: -10px;
+        margin-bottom: -5px;
+        color: #5f2a84;
     }
 
     .subtitle-text {
         text-align: center;
-        font-size: 18px;
-        color: #4a235a;
+        font-size: 17px;
+        color: #5a3b6e;
         margin-bottom: 25px;
     }
 
-    /* Card per l'uploader */
-    .stFileUploader {
-        padding: 25px !important;
-        background: #ffffff !important;
-        border-radius: 18px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.09) !important;
-        border: 1px solid #e0d4f7 !important;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* Card del risultato */
-    .result-box {
+    /* Uploader box */
+    .uploader-box {
+        background: white;
         padding: 20px;
-        background: #f6ecff;
-        border-radius: 15px;
-        border: 1px solid #d3c0f5;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
+        border-radius: 16px;
+        border: 1px solid #e5d9ff;
+        box-shadow: 0 6px 16px rgba(80, 20, 120, 0.1);
+        max-width: 480px;
+        margin: 0 auto;
     }
 
-    /* Immagine più piccola */
-    .stImage img {
+    /* Image container */
+    .img-box {
+        background: white;
+        padding: 15px;
+        border-radius: 14px;
+        border: 1px solid #eadfff;
+        box-shadow: 0 4px 14px rgba(70, 30, 110, 0.08);
+        text-align: center;
+        max-width: 380px;
+        margin: 20px auto;
+    }
+
+    /* Reduce image size */
+    .img-box img {
         width: 250px !important;
-        border-radius: 12px !important;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
+        border-radius: 10px;
+    }
+
+    /* Result card */
+    .result-box {
+        padding: 15px;
+        background: #f2eaff;
+        border-radius: 12px;
+        border: 1px solid #d8caff;
+        max-width: 450px;
+        margin: 0 auto;
     }
 
 </style>
@@ -166,23 +174,22 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 
 # ============================================================
-# LOGO + TITOLO
+# HEADER CON LOGO
 # ============================================================
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("logo.png", width=70)
+    st.image("logo.png", width=65)   # LOGO MOLTO PIÙ PICCOLO
 
 st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo e rileverò il livello di maturazione.</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
 
 
 # ============================================================
-# COCO
+# COCO CATEGORIES
 # ============================================================
 coco = COCO(test_json)
 cat_ids = sorted(coco.getCatIds())
 cat_id_to_name = {cat['id']: cat['name'] for cat in coco.loadCats(cat_ids)}
-
 
 # ============================================================
 # MODEL
@@ -201,7 +208,7 @@ num_classes = len(cat_ids)
 model = load_model(num_classes)
 
 # ============================================================
-# PREDIZIONE
+# PRED
 # ============================================================
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -221,19 +228,26 @@ def predict(image: Image.Image, threshold=0.5):
 
 
 # ============================================================
-# UPLOADER (IN UNA CARD STILIZZATA)
+# UI
 # ============================================================
 
-uploaded_file = st.file_uploader("Carica un'immagine", type=["jpg","jpeg","png"])
+# --- BOX DELL'UPLOADER ---
+st.markdown("<div class='uploader-box'>", unsafe_allow_html=True)
+uploaded_file = st.file_uploader("", type=["jpg","jpeg","png"])
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 if uploaded_file is not None:
-
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Anteprima immagine")
 
-    if st.button("🔍 Valuta", type="primary"):
+    # --- BOX DELL'IMMAGINE ---
+    st.markdown("<div class='img-box'>", unsafe_allow_html=True)
+    st.image(image, caption=None, use_column_width=False)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    if st.button("Valuta", type="primary"):
+
         labels = predict(image)
-
         traduzione = {
             "Mature": "Maturo",
             "Semi Mature": "Semi maturo",
@@ -245,11 +259,10 @@ if uploaded_file is not None:
 
         if labels:
             if len(labels) > 1:
-                st.success(f"I grappoli sono: {', '.join(labels)}")
+                st.success("I grappoli sono: **" + ", ".join(labels) + "**")
             else:
-                st.success(f"Il grappolo è: {labels[0]}")
+                st.success("Il grappolo è: **" + labels[0] + "**")
         else:
-            st.warning("Oooops, non ho rilevato grappoli nell'immagine.")
+            st.warning("Non ho rilevato grappoli nell'immagine.")
 
         st.markdown("</div>", unsafe_allow_html=True)
-
