@@ -236,13 +236,11 @@ if "history" not in st.session_state:
 # ============================================================
 uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file).convert("RGB")
+col_main, col_history = st.columns([3, 1])  # Main content + storico
 
-    # MOSTRA IMMAGINE – RIDOTTA
-    col_main, col_history = st.columns([3, 1])  # Main content + storico
-
-    with col_main:
+with col_main:
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file).convert("RGB")
         st.image(image, use_column_width=True)
 
         if st.button("Valuta", type="primary"):
@@ -254,9 +252,10 @@ if uploaded_file is not None:
             }
             labels = [traduzione.get(elem, elem) for elem in labels]
 
-            # Salva nello storico
+            # Salva nello storico SOLO DOPO LA PREDIZIONE
             st.session_state.history.append((image.copy(), labels))
 
+            # Mostra risultato per l'immagine corrente
             if labels:
                 if len(labels) > 1:
                     st.success(f"I grappoli sono: **{', '.join(labels)}**")
@@ -265,14 +264,19 @@ if uploaded_file is not None:
             else:
                 st.warning("Non ho rilevato grappoli nell'immagine.")
 
-    # ============================================================
-    # STORICO A SINISTRA – SOLO ULTIME DUE
-    # ============================================================
-    with col_history:
-        st.markdown("### Storico (ultime 2)")
-        for img_hist, labels_hist in reversed(st.session_state.history[-2:]):
+# ============================================================
+# STORICO A SINISTRA – MOSTRA LE DUE PRECEDENTI
+# ============================================================
+with col_history:
+    st.markdown("### Storico (ultime 2 predizioni)")
+
+    # Mostra le due immagini precedenti, se disponibili
+    if len(st.session_state.history) > 1:
+        for img_hist, labels_hist in reversed(st.session_state.history[:-1][-2:]):
             st.image(img_hist, use_column_width=True)
             if labels_hist:
                 st.caption(", ".join(labels_hist))
             else:
                 st.caption("Nessuna rilevazione")
+    else:
+        st.write("Nessuna predizione precedente")
