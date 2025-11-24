@@ -60,8 +60,8 @@ def predict(image: Image.Image, threshold=0.5):
 # ============================================================
 # STREAMLIT GUI
 # ============================================================
-st.title("Classificatore di Uva da Tavola")
-st.write("Carica un'immagine: il modello predirà la classe dell'UVA: Immatura, Semi Matura, Matura.")
+st.title("Smart Harvesting")
+st.write("Carica un'immagine o una foto, ed io ti dirò se il grappolo è Immaturo, Semi Maturo, Maturo.")
 
 uploaded_file = st.file_uploader("Scegli un'immagine", type=["jpg", "jpeg", "png"])
 
@@ -69,9 +69,14 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Immagine selezionata", use_container_width=True)
     
-    if st.button("Predici"):
+    if st.button("Valuta"):
         labels = predict(image)
+        print(type(labels))
         if labels:
-            st.success(f"Etichette predette: {', '.join(labels)}")
+            if len(labels)>1:
+                st.success(f"I grappoli sono: {', '.join(labels)}")
+            else:
+                st.success(f"Il grappolo è: {', '.join(labels)}")
+
         else:
-            st.warning("Nessuna etichetta rilevata sopra la soglia.")
+            st.warning("Oooops, non ho rilevato grappoli nell'immagine.")
