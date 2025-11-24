@@ -199,20 +199,20 @@ if uploaded_file is not None:
     with col2:
         st.image(image, use_column_width=True)
 
-    if st.button("Valuta", type="primary"):
+        if st.button("Valuta", type="primary", use_column_width=True):
 
-        labels = predict(image)
-        traduzione = {
-            "Mature": "Maturo",
-            "Semi Mature": "Semi maturo",
-            "Immature": "Immaturo"
-        }
-        labels = [traduzione.get(elem, elem) for elem in labels]
+            labels = predict(image)
+            traduzione = {
+                "Mature": "Maturo",
+                "Semi Mature": "Semi maturo",
+                "Immature": "Immaturo"
+            }
+            labels = [traduzione.get(elem, elem) for elem in labels]
 
-        if labels:
-            if len(labels) > 1:
-                st.success(f"I grappoli sono: **{', '.join(labels)}**")
+            if labels:
+                if len(labels) > 1:
+                    st.success(f"I grappoli sono: **{', '.join(labels)}**")
+                else:
+                    st.success(f"Il grappolo è: **{labels[0]}**")
             else:
-                st.success(f"Il grappolo è: **{labels[0]}**")
-        else:
-            st.warning("Non ho rilevato grappoli nell'immagine.")
+                st.warning("Non ho rilevato grappoli nell'immagine.")
