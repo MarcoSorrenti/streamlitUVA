@@ -195,7 +195,7 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
 
     # MOSTRA IMMAGINE – RIDOTTA
-    st.image(image, width=330, caption="Anteprima immagine")
+    st.image(image, width=100, caption="Anteprima immagine")
 
     if st.button("Valuta", type="primary"):
 
