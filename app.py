@@ -1,7 +1,7 @@
 import streamlit as st
 import torch
 import torch.nn as nn
-from torchvision import models, transforms
+from torchvision import transforms
 from PIL import Image
 from pycocotools.coco import COCO
 
@@ -23,7 +23,7 @@ cat_id_to_name = {cat['id']: cat['name'] for cat in coco.loadCats(cat_ids)}
 # CARICAMENTO MODELLO (ResNet50)
 # ============================================================
 def load_model(num_classes):
-    from torchvision.models import resnet50, ResNet50_Weights
+    from torchvision.models import resnet50
     model = resnet50(weights=None)  # niente pesi pretrained, li carichiamo
     model.fc = nn.Linear(model.fc.in_features, num_classes)
 
