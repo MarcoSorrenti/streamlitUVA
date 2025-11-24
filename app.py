@@ -195,10 +195,9 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
 
     # MOSTRA IMMAGINE – RIDOTTA
-    st.markdown(
-        f"<div style='display: flex; justify-content: center;'><img src='data:image/png;base64,{Image.open(uploaded_file).convert('RGB').resize((100,100)).tobytes().hex()}' width='150'/></div>",
-        unsafe_allow_html=True
-    )
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image(image, width=150)
 
     if st.button("Valuta", type="primary"):
 
