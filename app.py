@@ -128,7 +128,7 @@ try:
                     font-size:17px;
                 ">
                     <div><strong>{date_str}</strong></div>
-                    <div>{icon}</div>
+                    <div style="font-size:36px; margin-top:5px;">{icon}</div>
                     <div><br><span style="color:blue;">{t_min_int}°</span> <span style="color:red;">{t_max_int}°</span><br></div>
                 </div>
                 """,
