@@ -94,7 +94,6 @@ import torch.nn as nn
 from torchvision import transforms
 from PIL import Image
 from pycocotools.coco import COCO
-import base64
 
 # ============================================================
 # CONFIG
@@ -133,30 +132,6 @@ custom_css = """
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
-
-# ============================================================
-# BANNER
-# ============================================================
-
-# Apri l'immagine in binario e converti in base64
-with open("banner.png", "rb") as f:
-    data = f.read()
-    encoded = base64.b64encode(data).decode()
-
-# Inserisci l'immagine nel markdown
-st.markdown(
-    f"""
-    <style>
-    .full-width-img {{
-        width: 100%;
-        height: auto;
-    }}
-    </style>
-    <img src="data:image/png;base64,{encoded}" class="full-width-img">
-    """,
-    unsafe_allow_html=True
-)
-
 
 # ============================================================
 # HEADER CON LOGO
