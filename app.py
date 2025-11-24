@@ -87,13 +87,17 @@ try:
     t_min = daily["temperature_2m_min"]
     precip = daily["precipitation_probability_max"]
 
-    st.markdown("## Previsioni meteo (oggi + 7 giorni)")
+    st.markdown("<div class='subtitle-text'>Meteo</div>", unsafe_allow_html=True)
 
     # Creo le 7 colonne (una per ogni giorno)
     cols = st.columns(7)
     for i in range(7):
         with cols[i]:
-            date = datetime.fromisoformat(dates[i]).date()
+            # Formatta data come "Lun 24"
+            date = datetime.fromisoformat(dates[i])
+            date_str = date.strftime("%a %d")  # abbreviazione giorno + giorno numerico
+            date_str = date_str.capitalize()    # Maiuscola iniziale
+
             # Card con info
             st.markdown(
                 f"""
@@ -104,9 +108,9 @@ try:
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
                 ">
-                    <strong>{date}</strong><br>
-                    Max: {t_max[i]:.1f} °C<br>
-                    Min: {t_min[i]:.1f} °C<br>
+                    <strong>{date_str}</strong><br>
+                    <span style="color:red;">Max: {t_max[i]:.1f}°C</span> | 
+                    <span style="color:blue;">Min: {t_min[i]:.1f}°C</span><br>
                     Pioggia: {precip[i]} %
                 </div>
                 """,
