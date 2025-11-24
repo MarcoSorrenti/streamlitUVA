@@ -120,16 +120,16 @@ try:
             st.markdown(
                 f"""
                 <div style="
-                    background-color: #fff3e0;
+                    background-color: #B56576;
                     border-radius: 10px;
                     padding: 10px;
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
                     font-size:16px;
                 ">
-                    <strong>{date_str}</strong>
-                    {icon}
-                    <br><span style="color:blue;">{t_min_int}°</span> <span style="color:red;">{t_max_int}°</span><br>
+                    <div><strong>{date_str}</strong></div>
+                    <div>{icon}</div>
+                    <div><br><span style="color:blue;">{t_min_int}°</span> <span style="color:red;">{t_max_int}°</span><br></div>
                 </div>
                 """,
                 unsafe_allow_html=True
