@@ -236,7 +236,7 @@ if "history" not in st.session_state:
 # ============================================================
 uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
-col_main, col_history = st.columns([3, 2])  # Main content + storico
+col_main, col_history = st.columns([3, 1])  # Main content + storico
 
 with col_main:
     if uploaded_file is not None:
@@ -268,7 +268,7 @@ with col_main:
 # STORICO – MOSTRA LE DUE PRECEDENTI
 # ============================================================
 with col_history:
-    st.markdown("<div class='subtitle-text'>Ultime valutazioni.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle-text'>Ultime valutazioni</div>", unsafe_allow_html=True)
     # Mostra le due immagini precedenti, se disponibili
     if len(st.session_state.history) > 1:
         for img_hist, labels_hist in reversed(st.session_state.history[:-1][-2:]):
@@ -277,5 +277,3 @@ with col_history:
                 st.caption(", ".join(labels_hist))
             else:
                 st.caption("Nessuna valutazione")
-    else:
-        st.write("Nessuna valutazione precedente")
