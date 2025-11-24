@@ -96,16 +96,16 @@ from PIL import Image
 from pycocotools.coco import COCO
 
 # ============================================================
-# CONFIGURAZIONE BASE
+# CONFIG
 # ============================================================
 model_path = "model.pt"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 test_json = "dataset/annotations/mimc_test_images.json"
 
 # ============================================================
-# STREAMLIT - TEMA E STILE
+# STREAMLIT STYLES
 # ============================================================
-st.set_page_config(page_title="Smart Harvesting", page_icon="🍇", layout="centered")
+st.set_page_config(page_title="Smart Harvesting", page_icon="🌿", layout="centered")
 
 custom_css = """
 <style>
@@ -114,93 +114,92 @@ custom_css = """
         background-color: #faf5f0;
     }
 
-    /* TITOLI */
     .title-text {
-        font-size: 42px;
+        font-size: 36px;
         font-weight: 800;
         text-align: center;
-        margin-bottom: -10px;
+        margin-bottom: -5px;
         color: #5f2a84;
     }
+
     .subtitle-text {
         text-align: center;
-        font-size: 18px;
-        color: #4a235a;
+        font-size: 17px;
+        color: #5a3b6e;
         margin-bottom: 25px;
     }
 
-    /* CARD DEL FILE UPLOADER */
-    .stFileUploader {
+    /* Uploader box */
+    .uploader-box {
+        background: white;
         padding: 20px;
-        background: #ffffff;
         border-radius: 16px;
-        box-shadow: 0 6px 16px rgba(80, 20, 120, 0.1);
         border: 1px solid #e5d9ff;
+        box-shadow: 0 6px 16px rgba(80, 20, 120, 0.1);
         max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
     }
 
-    .stFileUploader label {
-        text-align: center;
-        font-weight: 600;
-        color: #4a235a;
-    }
-
-    /* Immagine più piccola */
-    .stImage img {
-        border-radius: 12px;
-        width: 280px !important;
-        height: auto;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* Card risultato */
-    .result-box {
-        padding: 18px;
-        background: #f4eaff;
+    /* Image container */
+    .img-box {
+        background: white;
+        padding: 15px;
         border-radius: 14px;
-        border: 1px solid #d9c4ff;
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
+        border: 1px solid #eadfff;
+        box-shadow: 0 4px 14px rgba(70, 30, 110, 0.08);
+        text-align: center;
+        max-width: 380px;
+        margin: 20px auto;
+    }
+
+    /* Reduce image size */
+    .img-box img {
+        width: 250px !important;
+        border-radius: 10px;
+    }
+
+    /* Result card */
+    .result-box {
+        padding: 15px;
+        background: #f2eaff;
+        border-radius: 12px;
+        border: 1px solid #d8caff;
+        max-width: 450px;
+        margin: 0 auto;
     }
 
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# Logo + Titolo
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image("logo.png", width=120)
-
-st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
-st.markdown(
-    "<div class='subtitle-text'>Carica un'immagine del grappolo e rileverò il livello di maturazione.</div>",
-    unsafe_allow_html=True
-)
 
 # ============================================================
-# CARICAMENTO CATEGORIE COCO
+# HEADER CON LOGO
+# ============================================================
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("logo.png", width=65)   # LOGO MOLTO PIÙ PICCOLO
+
+st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
+
+
+# ============================================================
+# COCO CATEGORIES
 # ============================================================
 coco = COCO(test_json)
 cat_ids = sorted(coco.getCatIds())
 cat_id_to_name = {cat['id']: cat['name'] for cat in coco.loadCats(cat_ids)}
 
 # ============================================================
-# CARICAMENTO MODELLO
+# MODEL
 # ============================================================
 def load_model(num_classes):
     from torchvision.models import resnet50
     model = resnet50(weights=None)
     model.fc = nn.Linear(model.fc.in_features, num_classes)
-
     state_dict = torch.load(model_path, map_location=device)
     model.load_state_dict(state_dict, strict=True)
-
     model.to(device)
     model.eval()
     return model
@@ -209,7 +208,7 @@ num_classes = len(cat_ids)
 model = load_model(num_classes)
 
 # ============================================================
-# PREPROCESSING E PREDIZIONE
+# PRED
 # ============================================================
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -227,17 +226,27 @@ def predict(image: Image.Image, threshold=0.5):
         labels = [cat_id_to_name[cat_ids[i]] for i, v in enumerate(preds) if v]
     return labels
 
+
 # ============================================================
-# UI STREAMLIT
+# UI
 # ============================================================
 
-uploaded_file = st.file_uploader("Carica un'immagine", type=["jpg", "jpeg", "png"])
+# --- BOX DELL'UPLOADER ---
+st.markdown("<div class='uploader-box'>", unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Carica immagine", type=["jpg","jpeg","png"])
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Anteprima immagine")
+
+    # --- BOX DELL'IMMAGINE ---
+    st.markdown("<div class='img-box'>", unsafe_allow_html=True)
+    st.image(image, caption="Anteprima", use_column_width=False)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button("Valuta", type="primary"):
+
         labels = predict(image)
         traduzione = {
             "Mature": "Maturo",
@@ -250,10 +259,10 @@ if uploaded_file is not None:
 
         if labels:
             if len(labels) > 1:
-                st.success(f"I grappoli sono: **{', '.join(labels)}**")
+                st.success("I grappoli sono: **" + ", ".join(labels) + "**")
             else:
-                st.success(f"Il grappolo è: **{', '.join(labels)}**")
+                st.success("Il grappolo è: **" + labels[0] + "**")
         else:
-            st.warning("Oooops, non ho rilevato grappoli nell'immagine.")
+            st.warning("Non ho rilevato grappoli nell'immagine.")
 
         st.markdown("</div>", unsafe_allow_html=True)
