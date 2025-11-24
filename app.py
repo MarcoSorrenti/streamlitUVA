@@ -88,9 +88,30 @@ try:
     precip = daily["precipitation_probability_max"]
 
     st.markdown("## Previsioni meteo (oggi + 7 giorni)")
-    for i in range(len(dates)):
-        date = datetime.fromisoformat(dates[i]).date()
-        st.write(f"**{date}**: Max {t_max[i]:.1f} °C, Min {t_min[i]:.1f} °C, Probabilità pioggia: {precip[i]} %")
+
+    # Creo le 7 colonne (una per ogni giorno)
+    cols = st.columns(7)
+    for i in range(7):
+        with cols[i]:
+            date = datetime.fromisoformat(dates[i]).date()
+            # Card con info
+            st.markdown(
+                f"""
+                <div style="
+                    background-color: #fff3e0;
+                    border-radius: 10px;
+                    padding: 10px;
+                    text-align: center;
+                    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+                ">
+                    <strong>{date}</strong><br>
+                    Max: {t_max[i]:.1f} °C<br>
+                    Min: {t_min[i]:.1f} °C<br>
+                    Pioggia: {precip[i]} %
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 except Exception as e:
     st.error("Impossibile ottenere le previsioni meteo.")
     st.write(e)
