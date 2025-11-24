@@ -266,11 +266,11 @@ if uploaded_file is not None:
                 st.warning("Non ho rilevato grappoli nell'immagine.")
 
     # ============================================================
-    # STORICO A SINISTRA
+    # STORICO A SINISTRA – SOLO ULTIME DUE
     # ============================================================
     with col_history:
-        st.markdown("### Storico")
-        for idx, (img_hist, labels_hist) in enumerate(reversed(st.session_state.history)):
+        st.markdown("### Storico (ultime 2)")
+        for img_hist, labels_hist in reversed(st.session_state.history[-2:]):
             st.image(img_hist, use_column_width=True)
             if labels_hist:
                 st.caption(", ".join(labels_hist))
