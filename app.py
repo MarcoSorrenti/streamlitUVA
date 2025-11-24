@@ -111,7 +111,7 @@ try:
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
                 ">
                     <strong>{date_str}</strong>
-                    <br><span style="color:blue;">{t_min[i]:.1f}°C</span> | <span style="color:red;">{t_max[i]:.1f}°C</span>br>
+                    <br><span style="color:blue;">{t_min[i]:.1f}°C</span><span style="color:red;">{t_max[i]:.1f}°C</span><br>
                     Pioggia: {precip[i]} %
                 </div>
                 """,
