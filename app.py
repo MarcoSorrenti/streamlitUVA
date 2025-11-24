@@ -120,12 +120,12 @@ try:
             st.markdown(
                 f"""
                 <div style="
-                    background-color: #B56576;
+                    background-color: #e2cfea;
                     border-radius: 10px;
                     padding: 10px;
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-                    font-size:16px;
+                    font-size:17px;
                 ">
                     <div><strong>{date_str}</strong></div>
                     <div>{icon}</div>
