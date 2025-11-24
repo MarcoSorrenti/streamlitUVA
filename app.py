@@ -105,7 +105,7 @@ test_json = "dataset/annotations/mimc_test_images.json"
 # ============================================================
 # STREAMLIT STYLES
 # ============================================================
-st.set_page_config(page_title="Smart Harvesting", page_icon="🌿", layout="centered")
+st.set_page_config(page_title="Smart Harvesting", page_icon="🍇", layout="centered")
 
 custom_css = """
 <style>
@@ -137,34 +137,6 @@ custom_css = """
         border: 1px solid #e5d9ff;
         box-shadow: 0 6px 16px rgba(80, 20, 120, 0.1);
         max-width: 480px;
-        margin: 0 auto;
-    }
-
-    /* Image container */
-    .img-box {
-        background: white;
-        padding: 15px;
-        border-radius: 14px;
-        border: 1px solid #eadfff;
-        box-shadow: 0 4px 14px rgba(70, 30, 110, 0.08);
-        text-align: center;
-        max-width: 380px;
-        margin: 20px auto;
-    }
-
-    /* Reduce image size */
-    .img-box img {
-        width: 250px !important;
-        border-radius: 10px;
-    }
-
-    /* Result card */
-    .result-box {
-        padding: 15px;
-        background: #f2eaff;
-        border-radius: 12px;
-        border: 1px solid #d8caff;
-        max-width: 450px;
         margin: 0 auto;
     }
 
@@ -232,10 +204,7 @@ def predict(image: Image.Image, threshold=0.5):
 # ============================================================
 
 # --- BOX DELL'UPLOADER ---
-st.markdown("<div class='uploader-box'>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader("", type=["jpg","jpeg","png"])
-st.markdown("</div>", unsafe_allow_html=True)
-
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
@@ -255,8 +224,6 @@ if uploaded_file is not None:
         }
         labels = [traduzione.get(elem, elem) for elem in labels]
 
-        st.markdown("<div class='result-box'>", unsafe_allow_html=True)
-
         if labels:
             if len(labels) > 1:
                 st.success("I grappoli sono: **" + ", ".join(labels) + "**")
@@ -264,5 +231,3 @@ if uploaded_file is not None:
                 st.success("Il grappolo è: **" + labels[0] + "**")
         else:
             st.warning("Non ho rilevato grappoli nell'immagine.")
-
-        st.markdown("</div>", unsafe_allow_html=True)
