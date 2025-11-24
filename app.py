@@ -195,11 +195,11 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
 
     # MOSTRA IMMAGINE – RIDOTTA
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
         st.image(image, use_column_width=True)
 
-        if st.button("Valuta", type="primary", use_column_width=True):
+        if st.button("Valuta", type="primary"):
 
             labels = predict(image)
             traduzione = {
