@@ -121,11 +121,16 @@ try:
                     padding: 10px;
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-                    font-size:16px;
+                    font-size:14px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 150px;  /* altezza minima fissa */
                 ">
                     <strong>{date_str}</strong>
-                    <br><span style="color:blue;">{t_min[i]:.1f}°</span> <span style="color:red;">{t_max[i]:.1f}°</span><br>
                     {icon}
+                    <br><span style="color:blue;">{t_min[i]:.1f}°</span> <span style="color:red;">{t_max[i]:.1f}°</span><br>
                 </div>
                 """,
                 unsafe_allow_html=True
