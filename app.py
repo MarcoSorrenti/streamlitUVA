@@ -15,6 +15,17 @@ except locale.Error:
     # fallback se la locale non è disponibile
     locale.setlocale(locale.LC_TIME, "")
 
+# Funzione per scegliere icona meteo
+def weather_icon(precip):
+    if precip < 20:
+        return "☀️"
+    elif precip < 50:
+        return "🌤️"
+    elif precip < 80:
+        return "🌧️"
+    else:
+        return "⛈️"
+
 # ============================================================
 # METEO API
 # ============================================================
@@ -95,10 +106,11 @@ try:
     cols = st.columns(7)
     for i in range(7):
         with cols[i]:
-            # Formatta data come "Lun 24"
+            # Formatta data come "Lun 24" in italiano
             date = datetime.fromisoformat(dates[i])
-            date_str = date.strftime("%a %d")  # abbreviazione giorno + giorno numerico
-            date_str = date_str.capitalize()    # Maiuscola iniziale
+            date_str = date.strftime("%a %d").capitalize()
+
+            icon = weather_icon(precip[i])
 
             # Card con info
             st.markdown(
@@ -109,10 +121,11 @@ try:
                     padding: 10px;
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+                    font-size:16px;
                 ">
                     <strong>{date_str}</strong>
                     <br><span style="color:blue;">{t_min[i]:.1f}°</span> <span style="color:red;">{t_max[i]:.1f}°</span><br>
-                    Pioggia: {precip[i]} %
+                    {icon}
                 </div>
                 """,
                 unsafe_allow_html=True
