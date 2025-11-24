@@ -112,6 +112,10 @@ try:
 
             icon = weather_icon(precip[i])
 
+            # Converto le temperature in interi
+            t_max_int = int(round(t_max[i]))
+            t_min_int = int(round(t_min[i]))
+
             # Card con info
             st.markdown(
                 f"""
@@ -121,16 +125,11 @@ try:
                     padding: 10px;
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-                    font-size:14px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 150px;  /* altezza minima fissa */
+                    font-size:16px;
                 ">
                     <strong>{date_str}</strong>
                     {icon}
-                    <br><span style="color:blue;">{t_min[i]:.1f}°</span> <span style="color:red;">{t_max[i]:.1f}°</span><br>
+                    <br><span style="color:blue;">{t_min_int}°</span> <span style="color:red;">{t_max_int}°</span><br>
                 </div>
                 """,
                 unsafe_allow_html=True
