@@ -6,31 +6,69 @@
 # from pycocotools.coco import COCO
 
 # # ============================================================
-# # CONFIGURAZIONE
+# # CONFIG
 # # ============================================================
 # model_path = "model.pt"
 # device = "cuda" if torch.cuda.is_available() else "cpu"
 # test_json = "dataset/annotations/mimc_test_images.json"
 
 # # ============================================================
-# # CARICAMENTO CATEGORIE COCO
+# # STREAMLIT STYLES
+# # ============================================================
+# st.set_page_config(page_title="Smart Harvesting", page_icon="🍇", layout="centered")
+
+# custom_css = """
+# <style>
+
+#     body {
+#         background-color: #faf5f0;
+#     }
+
+#     .title-text {
+#         font-size: 36px;
+#         font-weight: 800;
+#         text-align: center;
+#         margin-bottom: -5px;
+#         color: #5f2a84;
+#     }
+
+#     .subtitle-text {
+#         text-align: center;
+#         font-size: 17px;
+#         color: #5a3b6e;
+#         margin-bottom: 25px;
+#     }
+
+# </style>
+# """
+# st.markdown(custom_css, unsafe_allow_html=True)
+
+# # ============================================================
+# # HEADER CON LOGO
+# # ============================================================
+# col1, col2, col3 = st.columns([1, 2, 1])
+# with col1:
+#     st.image("logo.png", width=65)
+# with col2:
+#     st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
+#     st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
+
+# # ============================================================
+# # COCO CATEGORIES
 # # ============================================================
 # coco = COCO(test_json)
 # cat_ids = sorted(coco.getCatIds())
 # cat_id_to_name = {cat['id']: cat['name'] for cat in coco.loadCats(cat_ids)}
 
 # # ============================================================
-# # CARICAMENTO MODELLO (ResNet50)
+# # MODEL
 # # ============================================================
 # def load_model(num_classes):
 #     from torchvision.models import resnet50
-#     model = resnet50(weights=None)  # niente pesi pretrained, li carichiamo
+#     model = resnet50(weights=None)
 #     model.fc = nn.Linear(model.fc.in_features, num_classes)
-
-#     # Carica pesi addestrati
 #     state_dict = torch.load(model_path, map_location=device)
 #     model.load_state_dict(state_dict, strict=True)
-
 #     model.to(device)
 #     model.eval()
 #     return model
@@ -39,7 +77,7 @@
 # model = load_model(num_classes)
 
 # # ============================================================
-# # PREPROCESSING E INFERENZA
+# # PRED
 # # ============================================================
 # transform = transforms.Compose([
 #     transforms.Resize((224, 224)),
@@ -58,18 +96,21 @@
 #     return labels
 
 # # ============================================================
-# # STREAMLIT GUI
+# # UI
 # # ============================================================
-# st.title("Smart Harvesting")
-# st.write("Carica un'immagine o una foto, ed io ti dirò se il grappolo è Immaturo, Semi Maturo, Maturo.")
 
-# uploaded_file = st.file_uploader("Scegli un'immagine", type=["jpg", "jpeg", "png"])
+# uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
 # if uploaded_file is not None:
 #     image = Image.open(uploaded_file).convert("RGB")
-#     st.image(image, caption="Immagine selezionata")
-    
-#     if st.button("Valuta"):
+
+#     # MOSTRA IMMAGINE – RIDOTTA
+#     col1, col2, col3 = st.columns([2, 3, 2])
+#     with col2:
+#         st.image(image, use_column_width=True)
+
+#     if st.button("Valuta", type="primary"):
+
 #         labels = predict(image)
 #         traduzione = {
 #             "Mature": "Maturo",
@@ -77,15 +118,14 @@
 #             "Immature": "Immaturo"
 #         }
 #         labels = [traduzione.get(elem, elem) for elem in labels]
-        
-#         if labels:
-#             if len(labels)>1:
-#                 st.success(f"I grappoli sono: {', '.join(labels)}")
-#             else:
-#                 st.success(f"Il grappolo è: {', '.join(labels)}")
 
+#         if labels:
+#             if len(labels) > 1:
+#                 st.success(f"I grappoli sono: **{', '.join(labels)}**")
+#             else:
+#                 st.success(f"Il grappolo è: **{labels[0]}**")
 #         else:
-#             st.warning("Oooops, non ho rilevato grappoli nell'immagine.")
+#             st.warning("Non ho rilevato grappoli nell'immagine.")
 
 
 import streamlit as st
@@ -186,33 +226,53 @@ def predict(image: Image.Image, threshold=0.5):
     return labels
 
 # ============================================================
+# SESSION STATE – Storico
+# ============================================================
+if "history" not in st.session_state:
+    st.session_state.history = []  # Lista di tuple (immagine, labels)
+
+# ============================================================
 # UI
 # ============================================================
-
 uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
 
     # MOSTRA IMMAGINE – RIDOTTA
-    col1, col2, col3 = st.columns([2, 3, 2])
-    with col2:
+    col_main, col_history = st.columns([3, 1])  # Main content + storico
+
+    with col_main:
         st.image(image, use_column_width=True)
 
-    if st.button("Valuta", type="primary"):
+        if st.button("Valuta", type="primary"):
+            labels = predict(image)
+            traduzione = {
+                "Mature": "Maturo",
+                "Semi Mature": "Semi maturo",
+                "Immature": "Immaturo"
+            }
+            labels = [traduzione.get(elem, elem) for elem in labels]
 
-        labels = predict(image)
-        traduzione = {
-            "Mature": "Maturo",
-            "Semi Mature": "Semi maturo",
-            "Immature": "Immaturo"
-        }
-        labels = [traduzione.get(elem, elem) for elem in labels]
+            # Salva nello storico
+            st.session_state.history.append((image.copy(), labels))
 
-        if labels:
-            if len(labels) > 1:
-                st.success(f"I grappoli sono: **{', '.join(labels)}**")
+            if labels:
+                if len(labels) > 1:
+                    st.success(f"I grappoli sono: **{', '.join(labels)}**")
+                else:
+                    st.success(f"Il grappolo è: **{labels[0]}**")
             else:
-                st.success(f"Il grappolo è: **{labels[0]}**")
-        else:
-            st.warning("Non ho rilevato grappoli nell'immagine.")
+                st.warning("Non ho rilevato grappoli nell'immagine.")
+
+    # ============================================================
+    # STORICO A SINISTRA
+    # ============================================================
+    with col_history:
+        st.markdown("### Storico")
+        for idx, (img_hist, labels_hist) in enumerate(reversed(st.session_state.history)):
+            st.image(img_hist, use_column_width=True)
+            if labels_hist:
+                st.caption(", ".join(labels_hist))
+            else:
+                st.caption("Nessuna rilevazione")
