@@ -77,18 +77,11 @@ with col2:
     st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
 
-st.sidebar.header("Località meteo")
-lat = st.sidebar.number_input("Latitudine", value=41.117143)
-lon = st.sidebar.number_input("Longitudine", value=16.871871)
+lat, lon = 41.117143, 16.871871
 
-if st.sidebar.button("Aggiorna meteo"):
+try:
     weather = get_weather(lat, lon)
-    st.session_state.weather = weather
-
-# Se abbiamo dati meteo in session_state, li mostriamo
-if "weather" in st.session_state:
-    w = st.session_state.weather
-    daily = w["daily"]
+    daily = weather["daily"]
     dates = daily["time"]
     t_max = daily["temperature_2m_max"]
     t_min = daily["temperature_2m_min"]
@@ -97,7 +90,10 @@ if "weather" in st.session_state:
     st.markdown("## Previsioni meteo (oggi + 7 giorni)")
     for i in range(len(dates)):
         date = datetime.fromisoformat(dates[i]).date()
-        st.write(f"**{date}**: Max {t_max[i]:.1f} °C, Min {t_min[i]:.1f} °C, Prob. pioggia: {precip[i]}%")
+        st.write(f"**{date}**: Max {t_max[i]:.1f} °C, Min {t_min[i]:.1f} °C, Probabilità pioggia: {precip[i]} %")
+except Exception as e:
+    st.error("Impossibile ottenere le previsioni meteo.")
+    st.write(e)
 
 # ============================================================
 # COCO CATEGORIES
