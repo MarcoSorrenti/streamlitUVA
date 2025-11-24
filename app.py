@@ -6,6 +6,14 @@ from PIL import Image
 from pycocotools.coco import COCO
 import requests
 from datetime import datetime
+import locale
+
+# Imposta la locale italiana per ottenere nomi dei giorni in italiano
+try:
+    locale.setlocale(locale.LC_TIME, "it_IT.UTF-8")
+except locale.Error:
+    # fallback se la locale non è disponibile
+    locale.setlocale(locale.LC_TIME, "")
 
 # ============================================================
 # METEO API
@@ -62,12 +70,6 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # ============================================================
-# HEADER CON METEO
-# ============================================================
-
-
-
-# ============================================================
 # HEADER CON LOGO e METEO
 # ============================================================
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -108,9 +110,8 @@ try:
                     text-align: center;
                     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
                 ">
-                    <strong>{date_str}</strong><br>
-                    <span style="color:red;">Max: {t_max[i]:.1f}°C</span> | 
-                    <span style="color:blue;">Min: {t_min[i]:.1f}°C</span><br>
+                    <strong>{date_str}</strong>
+                    <br><span style="color:blue;">{t_min[i]:.1f}°C</span> | <span style="color:red;">{t_max[i]:.1f}°C</span>br>
                     Pioggia: {precip[i]} %
                 </div>
                 """,
