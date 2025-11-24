@@ -129,21 +129,9 @@ custom_css = """
         margin-bottom: 25px;
     }
 
-    /* Uploader box */
-    .uploader-box {
-        background: white;
-        padding: 20px;
-        border-radius: 16px;
-        border: 1px solid #e5d9ff;
-        box-shadow: 0 6px 16px rgba(80, 20, 120, 0.1);
-        max-width: 480px;
-        margin: 0 auto;
-    }
-
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
-
 
 # ============================================================
 # HEADER CON LOGO
@@ -154,7 +142,6 @@ with col2:
 
 st.markdown("<div class='title-text'>Smart Harvesting</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle-text'>Carica un'immagine del grappolo per valutarne la maturazione.</div>", unsafe_allow_html=True)
-
 
 # ============================================================
 # COCO CATEGORIES
@@ -198,21 +185,17 @@ def predict(image: Image.Image, threshold=0.5):
         labels = [cat_id_to_name[cat_ids[i]] for i, v in enumerate(preds) if v]
     return labels
 
-
 # ============================================================
 # UI
 # ============================================================
 
-# --- BOX DELL'UPLOADER ---
-uploaded_file = st.file_uploader("", type=["jpg","jpeg","png"])
+uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
 
-    # --- BOX DELL'IMMAGINE ---
-    st.markdown("<div class='img-box'>", unsafe_allow_html=True)
-    st.image(image, caption=None, use_column_width=False)
-    st.markdown("</div>", unsafe_allow_html=True)
+    # MOSTRA IMMAGINE – RIDOTTA
+    st.image(image, width=330, caption="Anteprima immagine")
 
     if st.button("Valuta", type="primary"):
 
@@ -226,8 +209,8 @@ if uploaded_file is not None:
 
         if labels:
             if len(labels) > 1:
-                st.success("I grappoli sono: **" + ", ".join(labels) + "**")
+                st.success(f"I grappoli sono: **{', '.join(labels)}**")
             else:
-                st.success("Il grappolo è: **" + labels[0] + "**")
+                st.success(f"Il grappolo è: **{labels[0]}**")
         else:
             st.warning("Non ho rilevato grappoli nell'immagine.")
